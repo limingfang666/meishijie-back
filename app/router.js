@@ -15,4 +15,9 @@ module.exports = app => {
   router.post('/user/login', controller.user.login);
   router.post('/user/login_out', token, controller.user.login_out);
 
+  // 菜谱相关
+  router.post('/menu/publish', controller.menu.publish);
+
+
+
 };
