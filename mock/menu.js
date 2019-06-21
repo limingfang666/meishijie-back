@@ -37,7 +37,7 @@ function createMockMenu(userId){
           title: '好吃的菜系',
           subtitle: '好吃的菜系好吃的菜系好吃的菜系',
           property: {
-            craft: 1,  
+            craft: 1,
             flavor: 1  
           },
           product_pic_url: 'http:img_url',
