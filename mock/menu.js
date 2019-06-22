@@ -10,24 +10,34 @@ try{
 }catch(e){
   userModel = require('../app/model/user.js')(global);
 }
-const createNum = 1;  // 生成的个数
-
+const createNum = 20000;  // 生成的个数
+// 每一个人创建指定数字的数据
 
 async function createMenu(){
   let users = await userModel.find({}).limit(200);
   if(!users || !users.length) return;
+  // [[],[]]
   let datas = users.map((user) => {
-    return createMockMenu().menus;
+    return (new Array(createNum).fill(1)).map(() => {
+      let menu = createMockMenu().menus;
+      menu.userId = user._id;
+      return menu;
+    })
+  }).reduce((item1,item2) => {
+    
+    return [
+      ...item1,
+      ...item2
+    ]
   });
-  datas.forEach((item,index) => {
-    item.userId = users[index]._id;
-  })
+  
   menuModel.insertMany(datas).then((e,d) => {
     console.log('菜谱数据插入成功');
   });
 }
 
 module.exports = createMenu;
+
 
 function createMockMenu(userId){
   return Mock.mock({

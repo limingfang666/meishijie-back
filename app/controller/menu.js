@@ -13,7 +13,7 @@ class MenuController extends Controller {
   // 查询指定关键字菜谱
   async query(){
     const { ctx,service } = this;
-    const payload = ctx.request.params || {};
+    const payload = ctx.request.query || {};
     const menus = await service.menu.query(payload);
     ctx.body = menus;
   }
