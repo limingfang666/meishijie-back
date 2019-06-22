@@ -11,9 +11,10 @@ async function createUser(){
   var data = (new Array(creteUserNum)).fill(1).map(() => {
     return createMockUser().user;
   })
+  // 先清空所有，在插入
+  await userModel.deleteMany({});
   await userModel.insertMany(data).then((e,d) => {
     console.log('用户插入成功');
-    console.log(d);
   });
 }
 

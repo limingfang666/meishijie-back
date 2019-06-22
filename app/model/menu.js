@@ -27,6 +27,8 @@ module.exports = app => {
     }],
     product_pics:[String],
     skill:  { type: String, required: true, minlength:1, maxlength:100 },
+    classify: {type: String, required: true},
+    parent_classify: {type: String, required: true},
     createdAt: { type: Date, default: Date.now },
     updateAt: { type: Date, default: Date.now }
   })

@@ -3,6 +3,8 @@ var Mock = require('mockjs')
 var Random = Mock.Random;
 
 let menuModel = require('../app/model/menu.js')(global);
+let classifyDatas = require('./data/classify');  // 分类数据
+let classifyDatas_len = classifyDatas.length-1;
 // 根据用户来生成的，现获取指定个数的用户
 let userModel;
 try{
@@ -10,17 +12,23 @@ try{
 }catch(e){
   userModel = require('../app/model/user.js')(global);
 }
-const createNum = 20000;  // 生成的个数
+const createNum = 2;  // 生成的个数
 // 每一个人创建指定数字的数据
+// 分类
 
 async function createMenu(){
-  let users = await userModel.find({}).limit(200);
+  let users = await userModel.find({}).limit(1);
   if(!users || !users.length) return;
   // [[],[]]
   let datas = users.map((user) => {
     return (new Array(createNum).fill(1)).map(() => {
       let menu = createMockMenu().menus;
       menu.userId = user._id;
+      // 随机分配给一个分类
+      let random = Math.round(Math.random()*classifyDatas_len);
+      let classify = classifyDatas[random];
+      menu.classify = classify.type;
+      menu.parent_classify = classify.parent_type;
       return menu;
     })
   }).reduce((item1,item2) => {
@@ -30,8 +38,8 @@ async function createMenu(){
       ...item2
     ]
   });
-  
-  menuModel.insertMany(datas).then((e,d) => {
+  await menuModel.deleteMany({});
+  await menuModel.insertMany(datas).then((e,d) => {
     console.log('菜谱数据插入成功');
   });
 }
@@ -40,6 +48,7 @@ module.exports = createMenu;
 
 
 function createMockMenu(userId){
+  
   return Mock.mock({
     'menus|1': [
       {
@@ -67,7 +76,7 @@ function createMockMenu(userId){
             describe: 'img_url',
           }],
           product_pics:[String],
-          skill:  '一堆故事',
+          skill:  '一堆故事'
       }]
   })
 }
