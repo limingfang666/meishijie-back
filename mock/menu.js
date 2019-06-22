@@ -12,16 +12,16 @@ try{
 }catch(e){
   userModel = require('../app/model/user.js')(global);
 }
-const createNum = 2;  // 生成的个数
+const createNum = 5;  // 生成的个数
 // 每一个人创建指定数字的数据
 // 分类
 
 async function createMenu(){
-  let users = await userModel.find({}).limit(1);
+  let users = await userModel.find({}).limit(10);
   if(!users || !users.length) return;
   // [[],[]]
   let datas = users.map((user) => {
-    return (new Array(createNum).fill(1)).map(() => {
+    return (new Array(createNum).fill(createNum)).map(() => {
       let menu = createMockMenu().menus;
       menu.userId = user._id;
       // 随机分配给一个分类
@@ -56,8 +56,8 @@ function createMockMenu(userId){
           title: '好吃的菜系',
           subtitle: '好吃的菜系好吃的菜系好吃的菜系',
           property: {
-            craft: 5,
-            flavor: 5
+            craft: Math.round(Math.random()*3) + 1,
+            flavor: Math.round(Math.random()*3) + 1
           },
           product_pic_url: 'http:img_url',
           product_story: '一堆故事',

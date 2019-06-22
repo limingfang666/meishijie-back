@@ -13,7 +13,7 @@ class MenuService extends Service {
   async query(payload){
     const { ctx } = this;
     console.log(payload)
-    return await this.ctx.model.Menu.find(payload,{userId:1,title: 1});
+    return await this.ctx.model.Menu.find(payload,{userId:1, title: 1, classify: 1, property: 1});
   }
   
 }

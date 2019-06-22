@@ -4,7 +4,7 @@ var Random = Mock.Random;
 
 let userModel = require('../app/model/user.js')(global);
 // 随机生成一些名字和密码
-const creteUserNum = 1;
+const creteUserNum = 2;
 
 async function createUser(){
   // 生成数据

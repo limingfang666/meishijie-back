@@ -23,15 +23,15 @@ const MeunClassification = [
     list: [
       {
         name: '川菜',
-        type: '3-1'
+        type: '2-1'
       },
       {
         name: '湘菜',
-        type: '3-2'
+        type: '2-2'
       },
       {
         name: '粤菜',
-        type: '3-3'
+        type: '2-3'
       }
     ]
   },
@@ -41,19 +41,19 @@ const MeunClassification = [
     list: [
       {
         name: '四川小吃',
-        type: '2-1'
+        type: '3-1'
       },
       {
         name: '广东小吃',
-        type: '2-2'
+        type: '3-2'
       },
       {
         name: '北京小吃',
-        type: '2-3'
+        type: '3-3'
       },
       {
         name: '陕西小吃',
-        type: '2-4'
+        type: '3-4'
       }
     ]
   }
