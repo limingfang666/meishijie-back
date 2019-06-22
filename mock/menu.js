@@ -5,6 +5,8 @@ var Random = Mock.Random;
 let menuModel = require('../app/model/menu.js')(global);
 let classifyDatas = require('./data/classify');  // 分类数据
 let classifyDatas_len = classifyDatas.length-1;
+let propertyDatas = require('./data/property');  // 属性
+let propertyDatas_len = propertyDatas.length-1;
 // 根据用户来生成的，现获取指定个数的用户
 let userModel;
 try{
@@ -29,6 +31,14 @@ async function createMenu(){
       let classify = classifyDatas[random];
       menu.classify = classify.type;
       menu.parent_classify = classify.parent_type;
+
+      let property = propertyDatas[random];
+      menu.property = propertyDatas.reduce((obj, item) => {
+        let random = Math.round(Math.random()*(item.list.length - 1));
+        let option = item.list[random];
+        obj[item.title] = option.type;
+        return obj;
+      },{});
       return menu;
     })
   }).reduce((item1,item2) => {
@@ -38,6 +48,7 @@ async function createMenu(){
       ...item2
     ]
   });
+  
   await menuModel.deleteMany({});
   await menuModel.insertMany(datas).then((e,d) => {
     console.log('菜谱数据插入成功');
@@ -56,8 +67,8 @@ function createMockMenu(userId){
           title: '好吃的菜系',
           subtitle: '好吃的菜系好吃的菜系好吃的菜系',
           property: {
-            craft: Math.round(Math.random()*3) + 1,
-            flavor: Math.round(Math.random()*3) + 1
+            craft: 0,
+            flavor: 0
           },
           product_pic_url: 'http:img_url',
           product_story: '一堆故事',

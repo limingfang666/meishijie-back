@@ -40,7 +40,7 @@ class UserController extends Controller {
     const { ctx,service } = this;
     const payload = ctx.request.body || {};
     
-    const findUser = await service.user.findUserByName({name: payload.name});
+    const findUser = await service.user.findUser({name: payload.name});
     
     if(!findUser) {
       ctx.body = {

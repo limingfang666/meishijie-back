@@ -15,6 +15,10 @@ module.exports = app => {
   router.post('/user/login', controller.user.login);
   router.post('/user/login_out', token, controller.user.login_out);
 
+  // 用户操作行为
+  router.post('/user/follow', controller.userAction.follow);
+  router.get('/user/follow', controller.userAction.follow);
+
   // 菜谱相关
   router.post('/menu/publish', controller.menu.publish);
   router.get('/menu/query', controller.menu.query);

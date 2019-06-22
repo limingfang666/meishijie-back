@@ -4,7 +4,7 @@ var Random = Mock.Random;
 
 let userModel = require('../app/model/user.js')(global);
 // 随机生成一些名字和密码
-const creteUserNum = 2;
+const creteUserNum = 5;
 
 async function createUser(){
   // 生成数据
@@ -13,8 +13,15 @@ async function createUser(){
   })
   // 先清空所有，在插入
   await userModel.deleteMany({});
-  await userModel.insertMany(data).then((e,d) => {
+  await userModel.insertMany(data).then((d) => {
     console.log('用户插入成功');
+    // 互相关注
+    d.forEach(async (item) => {
+      let filterId = d.filter(o => o._id !== item._id).map(o => ({userId: o._id})); // 排除自己
+      console.log(filterId);
+      item.follows = filterId;
+      await item.save();
+    })
   });
 }
 
@@ -24,6 +31,7 @@ function createMockUser(){
   return Mock.mock({
     'user|1': [{
         'name': Random.word(),
+        'sign': Random.csentence(),
         'password': Math.round(Math.random() * 1000) // 密码需要加密
     }]
   })

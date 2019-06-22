@@ -6,8 +6,8 @@ module.exports = app => {
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
     property: {
-      craft: {type: Number, enum: [1,2,3,4], required: true},  // 工艺
-      flavor: {type: Number, enum: [1,2,3,4], required: true}  // 口味
+      craft: {type: String,  required: true},  // 工艺 enum: [1,2,3,4],
+      flavor: {type: String, required: true}  // 口味  enum: [1,2,3,4],
     },
     product_pic_url: { type: String, required: true },
     product_story: { type: String, required: true, minlength:1, maxlength:100 },
