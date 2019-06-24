@@ -46,6 +46,13 @@ class UserActionController extends Controller {
       }
       return;
     }
+
+    const body = ctx.request.body || {};
+    let isAdd = await service.user.toggleCollection(body);
+    ctx.body = {
+      code: 0,
+      mes: isAdd ? '已收藏' : '已取消收藏'
+    }
   }
 }
 

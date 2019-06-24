@@ -90,6 +90,43 @@ class UserService extends Service {
     }
     return [];
   }
+
+  /**
+   *收藏或取消收藏
+   * @param {*} payload
+   * @returns {Boolean} true 收藏 false，取消
+   * @memberof UserService
+   */
+  async toggleCollection(payload){
+    let collections = await this.ctx.model.User
+                        .findOne({_id: payload.userId})
+                        .populate({
+                          path: 'collections',  // 关注
+                        });
+    let collectionUsers = await this.ctx.model.Menu
+                .findOne({_id: payload.collectionId})
+                .populate({
+                  path: 'collectionUsers',  // 粉丝
+                });
+    let isAdd = false;
+    // 关注 - 取关
+    if(!!collections.collections.find(item => item._id.toString() === payload.collectionId)){
+      // 取消关注
+      collections.collections = collections.collections.filter(item => item._id.toString() !== payload.collectionId);
+      // 删掉粉丝
+      collectionUsers.collectionUsers = collectionUsers.collectionUsers.filter(item => item._id.toString() !== payload.userId);
+      isAdd = false;
+    }else {
+      // 关注
+      collections.collections.push(payload.collectionId);
+      // 添加粉丝
+      collectionUsers.collectionUsers.push(payload.userId);
+      isAdd = true;
+    }
+    await collections.save();
+    await collectionUsers.save();
+    return isAdd;
+  }
   
 }
 
