@@ -3,6 +3,10 @@ module.exports = app => {
   const mongoose = app.mongoose
   const MenuSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, required: true, index: true },
+    collectionUsers:[{
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'User',
+    }],
     title: { type: String, required: true },
     subtitle: { type: String, required: true },
     property: {

@@ -4,7 +4,7 @@ var Random = Mock.Random;
 
 let userModel = require('../app/model/user.js')(global);
 // 随机生成一些名字和密码
-const creteUserNum = 5;
+const creteUserNum = 3;
 
 async function createUser(){
   // 生成数据
@@ -16,12 +16,15 @@ async function createUser(){
   await userModel.insertMany(data).then((d) => {
     console.log('用户插入成功');
     // 互相关注
+    // 我关注了谁
     d.forEach(async (item) => {
-      let filterId = d.filter(o => o._id !== item._id).map(o => ({userId: o._id})); // 排除自己
-      console.log(filterId);
-      item.follows = filterId;
+      let filterId = d.filter(o => o._id !== item._id);// 排除自己
+      // 互相关注
+      let followingUsers = filterId.map(o => (o._id)); 
+      item.following.push(...followingUsers);
+      item.follows.push(...followingUsers);
       await item.save();
-    })
+    });
   });
 }
 

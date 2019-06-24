@@ -16,8 +16,13 @@ module.exports = app => {
   router.post('/user/login_out', token, controller.user.login_out);
 
   // 用户操作行为
-  router.post('/user/follow', controller.userAction.follow);
-  router.get('/user/follow', controller.userAction.follow);
+  // 我关注的
+  router.post('/user/following', controller.userAction.following);
+  router.get('/user/following', controller.userAction.following);
+
+  // 我收藏的
+  router.post('/user/collection', controller.userAction.collection);
+  router.get('/user/collection', controller.userAction.collection);
 
   // 菜谱相关
   router.post('/menu/publish', controller.menu.publish);

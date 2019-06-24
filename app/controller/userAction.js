@@ -8,12 +8,13 @@ class UserActionController extends Controller {
    * post 关注或取消关注指定的用户 {userId:,followUserId:,}
    * 
    */
-  async follow() {
+  async following() {
     const { ctx,service } = this;
     if(ctx.request.method === 'GET'){
       const payload = ctx.request.query || {};
+      const payloadClone = ctx.helper.cloneDeepWith(payload);
       //现在自己
-      let follows = await service.user.findUserFollows(payload);
+      let follows = await service.user.findUserFollowing(payloadClone);
       // 找到
       ctx.body = {
         userId: payload.userId,
@@ -21,12 +22,30 @@ class UserActionController extends Controller {
       }
       return;
     }
-
     const body = ctx.request.body || {};
-    let has = await service.user.toggleFollow(body);
-    console.log(has);
-
-    ctx.body = 'ok';
+    let isAdd = await service.user.toggleFollow(body);
+    ctx.body = {
+      code: 0,
+      mes: isAdd ? '已关注' : '已取消关注'
+    }
+  }
+  /**
+   * 收藏的菜单
+   */
+  async collection(){
+    const { ctx,service } = this;
+    if(ctx.request.method === 'GET'){
+      const payload = ctx.request.query || {};
+      const payloadClone = ctx.helper.cloneDeepWith(payload);
+      //现在自己
+      let collections = await service.user.findUserCollections(payloadClone);
+      // 找到
+      ctx.body = {
+        userId: payload.userId,
+        list: collections
+      }
+      return;
+    }
   }
 }
 

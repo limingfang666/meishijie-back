@@ -7,9 +7,17 @@ module.exports = app => {
     sign: { type: String, required: true },
     avatar: { type: String},
     userage: {type: Number},
-    follows: [{
-      userId: {type: mongoose.Schema.Types.ObjectId, required: true},
-      followData: { type: Date, default:Date.now}
+    follows: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'User',
+    }],
+    following: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'User',
+    }],
+    collections:[{
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Menu',
     }],
     logindate : { type: Date, default:Date.now},   
     createdAt: { type: Date, default: Date.now },

@@ -14,7 +14,7 @@ try{
 }catch(e){
   userModel = require('../app/model/user.js')(global);
 }
-const createNum = 5;  // 生成的个数
+const createNum = 2;  // 生成的个数
 // 每一个人创建指定数字的数据
 // 分类
 
@@ -32,6 +32,7 @@ async function createMenu(){
       menu.classify = classify.type;
       menu.parent_classify = classify.parent_type;
 
+      // 所属的属性
       let property = propertyDatas[random];
       menu.property = propertyDatas.reduce((obj, item) => {
         let random = Math.round(Math.random()*(item.list.length - 1));
@@ -39,10 +40,14 @@ async function createMenu(){
         obj[item.title] = option.type;
         return obj;
       },{});
+      
+      // // 让其他用户收藏
+      // filterUsers.each((user) => {
+      //   user.meuns.push();
+      // })
       return menu;
     })
   }).reduce((item1,item2) => {
-    
     return [
       ...item1,
       ...item2
@@ -50,9 +55,23 @@ async function createMenu(){
   });
   
   await menuModel.deleteMany({});
-  await menuModel.insertMany(datas).then((e,d) => {
-    console.log('菜谱数据插入成功');
-  });
+  for(let i = 0; i < datas.length; i++){
+    // 其他用户
+    let filterUsers = users.filter(item => item._id !== datas[i].userId);
+    // 先插入菜单
+    let m = await menuModel.create(datas[i]);
+    
+    // 这个菜单让其他用户收藏
+    for(let j = 0; j < filterUsers.length; j++){
+       filterUsers[j].collections.push(m);
+       await filterUsers[j].save();
+    }
+    // 菜单记录被收藏的用户
+    m.collectionUsers.push(...filterUsers);
+    await m.save();
+  }
+  console.log('菜谱数据插入成功');
+  
 }
 
 module.exports = createMenu;

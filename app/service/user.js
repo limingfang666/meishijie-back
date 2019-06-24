@@ -15,7 +15,6 @@ class UserService extends Service {
       payload._id = payload.userId;
       delete payload.userId;
     }
-    
     return await this.ctx.model.User.findOne(payload, options);
   }
 
@@ -26,17 +25,19 @@ class UserService extends Service {
   }
 
   //查找用户的关注者
-  async findUserFollows(payload){
-    // 根据userId找到自己，然后再找到用户的follow
-    let {follows} = await this.ctx.service.user.findUser(payload);
-    let followsArr = [];
-    if(follows.length){
-      for(let i = 0; i < follows.length; i++){
-        let findUser = await this.ctx.service.user.findUser({userId: follows[i].userId}, {follows: 0});
-        followsArr.push(findUser);
-      }
+  async findUserFollowing(payload){
+
+    let followings = await this.ctx.model.User
+                            .findOne({_id: payload.userId}, {following: 1})
+                            .populate({
+                              path: 'following',
+                              select: 'name _id sign'
+                            });
+                            
+    if(followings){
+      return followings.following;
     }
-    return followsArr;
+    return [];
   }
   // 关注或取消关注指定用户
   /**
@@ -46,26 +47,50 @@ class UserService extends Service {
    * @memberof UserService
    */
   async toggleFollow(payload){
-    let findUser = await this.ctx.service.user.findUser({userId: payload.userId});
-    let follows = findUser.follows;
-    let has = false; 
-    if(follows.findIndex(item => item.userId.toString() === payload.followUserId) !== -1){
-      
-      follows = follows.filter(item => {
-        return item.userId.toString() !== payload.followUserId
-      });
-      has = false;
+    let following = await this.ctx.model.User
+                        .findOne({_id: payload.userId})
+                        .populate({
+                          path: 'following',  // 关注
+                        });
+    let follows = await this.ctx.model.User
+                .findOne({_id: payload.followUserId})
+                .populate({
+                  path: 'follows',  // 粉丝
+                });
+    let isAdd = false;
+    // 关注 - 取关
+    if(!!following.following.find(item => item._id.toString() === payload.followUserId)){
+      // 取消关注
+      following.following = following.following.filter(item => item._id.toString() !== payload.followUserId);
+      // 删掉粉丝
+      follows.follows = follows.follows.filter(item => item._id.toString() !== payload.userId);
+      isAdd = false;
     }else {
-      follows.push({
-        userId: payload.followUserId
-      });
-      has = true;
+      // 关注
+      following.following.push(payload.followUserId);
+      // 添加粉丝
+      follows.follows.push(payload.userId);
+      isAdd = true;
     }
-    
-    findUser.follows = follows;
-    await findUser.save();
-    return has;
+    await following.save();
+    await follows.save();
+    return isAdd;
   }
+
+  async findUserCollections(payload){
+    let collections = await this.ctx.model.User
+        .findOne({_id: payload.userId}, {collections: 1})
+        .populate({
+          path: 'collections',
+          // select: 'name _id sign'
+        });
+        
+    if(collections){
+    return collections.collections;
+    }
+    return [];
+  }
+  
 }
 
 module.exports = UserService;
