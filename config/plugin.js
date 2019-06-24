@@ -20,3 +20,7 @@ exports.validate = {
   enable: true,
   package: 'egg-validate',
 };
+exports.validatePlus = {
+  enable: true,
+  package: 'egg-validate-plus',
+};

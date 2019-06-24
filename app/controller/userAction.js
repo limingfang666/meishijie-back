@@ -2,6 +2,8 @@
 
 const Controller = require('egg').Controller;
 
+
+
 class UserActionController extends Controller {
   /**
    * get 获取关注者 {userId}
@@ -34,8 +36,13 @@ class UserActionController extends Controller {
    */
   async collection(){
     const { ctx,service } = this;
+
+    
+
     if(ctx.request.method === 'GET'){
       const payload = ctx.request.query || {};
+      const validateResult = await ctx.validate('user.collection', payload);
+      if(!validateResult) return;
       const payloadClone = ctx.helper.cloneDeepWith(payload);
       //现在自己
       let collections = await service.user.findUserCollections(payloadClone);
@@ -49,10 +56,7 @@ class UserActionController extends Controller {
 
     const body = ctx.request.body || {};
     let isAdd = await service.user.toggleCollection(body);
-    ctx.body = {
-      code: 0,
-      mes: isAdd ? '已收藏' : '已取消收藏'
-    }
+    ctx.returnBody(200, isAdd ? '已收藏' : '已取消收藏');
   }
 }
 
