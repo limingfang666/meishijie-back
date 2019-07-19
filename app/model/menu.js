@@ -11,7 +11,9 @@ module.exports = app => {
     subtitle: { type: String, required: true },
     property: {
       craft: {type: String,  required: true},  // 工艺 enum: [1,2,3,4],
-      flavor: {type: String, required: true}  // 口味  enum: [1,2,3,4],
+      flavor: {type: String, required: true},  // 口味  enum: [1,2,3,4],
+      hard: {type: String, required: true},   // 难度 enum: [1,2,3,4],
+      pepole: {type: String, required: true}  // pepole 人数: [1,2,3,4],
     },
     product_pic_url: { type: String, required: true },
     product_story: { type: String, required: true, minlength:1, maxlength:100 },
@@ -29,7 +31,6 @@ module.exports = app => {
       img_url: {type: String, required: true},
       describe: {type: String, required: true},
     }],
-    product_pics:[String],
     skill:  { type: String, required: true, minlength:1, maxlength:100 },
     classify: {type: String, required: true},
     parent_classify: {type: String, required: true},

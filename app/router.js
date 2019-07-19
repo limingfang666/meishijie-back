@@ -27,6 +27,8 @@ module.exports = app => {
   // 菜谱相关
   router.post('/menu/publish', controller.menu.publish);
   router.get('/menu/query', controller.menu.query);
+  router.get('/menu/classify', controller.menu.classify);
+  router.get('/menu/property', controller.menu.property);
 
 
 

@@ -44,6 +44,23 @@ class MenuController extends Controller {
     const menus = await service.menu.query(payload);
     ctx.body = menus;
   }
+
+  async classify(){
+    const { ctx,service } = this;
+    const classify = await service.menu.classify();
+    ctx.body = {
+      ec: 200,
+      data: classify
+    };
+  }
+  async property(){
+    const { ctx,service } = this;
+    const properties = await service.menu.property();
+    ctx.body = {
+      ec: 200,
+      data: properties
+    };
+  }
 }
 
 module.exports = MenuController;
