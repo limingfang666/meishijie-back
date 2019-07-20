@@ -10,7 +10,7 @@ class UserController extends Controller {
   async create(){
     const { ctx,service,model } = this;
     const payload = ctx.request.body || {};
-    const findUser = await service.user.findUserByName({name: payload.name});
+    const findUser = await service.user.findUser({name: payload.name});
     
     if(findUser){
       ctx.body = {
@@ -67,8 +67,11 @@ class UserController extends Controller {
 
     ctx.body = {
       code: 0,
-      _id: findUser._id,
-      token: token,
+      data: {
+        _id: findUser._id,
+        name: findUser.name,
+        token: token,
+      },
       mes: '登录成功'
     }
   }

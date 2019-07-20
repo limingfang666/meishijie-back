@@ -6,6 +6,8 @@ class MenuController extends Controller {
   async publish(){
     const { ctx,service } = this;
     const payload = ctx.request.body || {};
+    console.log(111111111, typeof payload);
+    console.log( JSON.stringify(payload, null, 2));
     await service.menu.publish(payload);
     ctx.body = 'test';
   }

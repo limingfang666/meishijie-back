@@ -6,8 +6,12 @@ class MenuService extends Service {
 
   async publish(payload){
     const { ctx } = this;
-    let menuPublish = await this.ctx.model.Menu.create(payload);
-    console.log(menuPublish);
+
+    if(!payload.parent_classify) {
+      payload.parent_classify = payload.classify[0];
+    }
+
+    return await this.ctx.model.Menu.create(payload);
   }
 
   async query(payload){

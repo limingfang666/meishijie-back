@@ -27,19 +27,20 @@ async function createMenu(){
       let menu = createMockMenu().menus;
       menu.userId = user._id;
       // 随机分配给一个分类
-      let random = Math.round(Math.random()*classifyDatas_len);
-      let classify = classifyDatas[random];
-      menu.classify = classify.type;
-      menu.parent_classify = classify.parent_type;
-
+      // let random = Math.round(Math.random()*classifyDatas_len);
+      // let classify = classifyDatas[random];
+      // menu.classify = classify.type;
+      // menu.parent_classify = classify.parent_type;
       // 所属的属性
-      let property = propertyDatas[random];
-      menu.property = propertyDatas.reduce((obj, item) => {
-        let random = Math.round(Math.random()*(item.list.length - 1));
-        let option = item.list[random];
-        obj[item.title] = option.type;
-        return obj;
-      },{});
+      // let property = propertyDatas[random];
+      // menu.property = propertyDatas.reduce((obj, item) => {
+      //   let random = Math.round(Math.random()*(item.list.length - 1));
+      //   let option = item.list[random];
+      //   obj[item.title] = option.type;
+      //   return obj;
+      // },{});
+
+      menu.parent_classify = menu.classify[0];
       
       // // 让其他用户收藏
       // filterUsers.each((user) => {
@@ -76,37 +77,36 @@ async function createMenu(){
 
 module.exports = createMenu;
 
+function randomNum(n){
+  return Math.ceil(Math.random()*(n));
+}
+
+function createRandomId(){
+  return randomNum(4) + '-' + randomNum(4);
+}
+
 
 function createMockMenu(userId){
   
   return Mock.mock({
     'menus|1': [
       {
-          //userId: userId,
-          title: '好吃的菜系',
-          subtitle: '好吃的菜系好吃的菜系好吃的菜系',
-          property: {
-            craft: 0,
-            flavor: 0
-          },
-          product_pic_url: 'http:img_url',
-          product_story: '一堆故事',
-          raw_material:{ 
-            main_material: {  
-              name: '有什么美味呢',
-              specs: '有什么美味呢',
-            },
-            accessories_material: {  
-              name: '有什么美味呢',
-              specs: '有什么美味呢',
-            }
-          },
-          step: [{
-            img_url: 'img_url',
-            describe: 'img_url',
-          }],
-          product_pics:[String],
-          skill:  '一堆故事'
+        title: Random.csentence(6),  // 标题
+        product_pic_url: 'https://s1.st.meishij.net/r/208/102/1025708/s1025708_156144940220181.jpg', // 成品图URL
+        product_story: Random.csentence(20), // 成品图故事
+        property: {
+          craft: createRandomId(),  // 工艺 enum: [1,2,3,4],
+          flavor: createRandomId(),  // 口味  enum: [1,2,3,4],
+          hard: createRandomId(),   // 难度 enum: [1,2,3,4],
+          pepole: createRandomId()  // pepole 人数: [1,2,3,4],
+        },  // 属性
+        raw_material: { // 料
+          "main_material|3-5": [{name: Random.csentence(3), specs: Random.csentence(3)}], // 主料
+          "accessories_material|3-5": [{name: Random.csentence(3), specs: Random.csentence(3)}], // 辅料
+        },
+        "steps|3-5": [{img_url: 'https://s1.st.meishij.net/rs/208/102/1025708/n1025708_156144944939153.jpg',describe: Random.csentence(310)}], // 步骤
+        classify: createRandomId(), // 菜谱分类
+        skill: Random.csentence(50),
       }]
   })
 }
