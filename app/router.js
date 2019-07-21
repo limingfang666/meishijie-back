@@ -14,6 +14,7 @@ module.exports = app => {
   router.post('/user/create', controller.user.create);
   router.post('/user/login', controller.user.login);
   router.post('/user/login_out', token, controller.user.login_out);
+  router.post('/user/info', token, controller.user.info);
 
   // 用户操作行为
   // 我关注的

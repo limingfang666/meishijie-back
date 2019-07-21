@@ -75,6 +75,34 @@ class UserController extends Controller {
       mes: '登录成功'
     }
   }
+  // 拿到用户信息
+  async info(){
+    const { ctx,service,model } = this;
+    const payload = ctx.request.body || {};
+    let authorization = ctx.request.header.authorization.split(' ')[1];
+    let decode = ctx.app.jwt.decode(authorization);
+
+    const findUser = await service.user.findUser({_id: decode.data._id});
+
+    if(!findUser) {
+      ctx.body = {
+        code: 1,
+        data: {},
+        mes: '用户不存在'
+      }
+      return;
+    }
+    
+    ctx.body = {
+      code: 0,
+      data: {
+        name: findUser.name,
+        _id: findUser._id,
+        avatar: findUser.avatar
+      },
+      mes: '用户已返回'
+    }
+  }
 }
 
 module.exports = UserController;
