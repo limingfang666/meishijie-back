@@ -10,13 +10,13 @@ class MenuService extends Service {
     if(!payload.parent_classify) {
       payload.parent_classify = payload.classify[0];
     }
-
-    return await this.ctx.model.Menu.create(payload);
+    // 错误的设置
+    const menu = await this.ctx.model.Menu.create(payload);
+    return menu;
   }
 
   async query(payload){
     const { ctx } = this;
-    console.log(payload)
     return await this.ctx.model.Menu.find(payload,{userId:1, title: 1, classify: 1, property: 1});
   }
   

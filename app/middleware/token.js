@@ -13,9 +13,7 @@ module.exports = () => {
     authorization = authorization.split(' ')[1];
     try{
       let data = await ctx.app.jwt.verify(authorization, ctx.app.config.jwt.secret);
-      console.log('data', data);
     }catch(err){
-      console.log('error', err);
       if(err.name === 'TokenExpiredError'){
         // 过期把数据库中也清除
         // await service.actionToken.deleteToken({userId: payload._id});

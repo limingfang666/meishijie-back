@@ -11,7 +11,7 @@ class ActionTokenService extends Service {
       },
       // exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7)
     }, ctx.app.config.jwt.secret, {
-      expiresIn: '30s'
+      expiresIn: '100000000s'
     })
   }
 
