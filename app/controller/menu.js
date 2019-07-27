@@ -56,6 +56,36 @@ class MenuController extends Controller {
     };
   }
 
+  // 根据id拿到菜单具体的信息
+  async menuInfo(){
+    const { ctx,service } = this;
+    const payload = ctx.request.query || {};
+
+    const menu = await service.menu.menuInfo({_id: payload.menuId});
+    if(!menu){
+      ctx.body = {
+        code: 1,
+        data: {
+          menuId: payload.menuId
+        },
+        mes: '菜谱信息不存在'
+      }
+      return;
+    }
+    const userInfo = await service.user.findUserInfo({_id: menu.userId});
+    ctx.body = {
+      code: 0,
+      data: {
+        info:{
+          ...menu._doc,
+          userInfo
+        },
+        menuId: payload.menuId
+      },
+      mes: '成功返回菜谱信息'
+    }
+  }
+
   async classify(){
     const { ctx,service } = this;
     const classify = await service.menu.classify();

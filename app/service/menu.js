@@ -20,6 +20,11 @@ class MenuService extends Service {
     const field = {userId:1, title: 1, classify: 1, property: 1, product_pic_url: 1,name:1};
     return await this.ctx.model.Menu.find(payload, field);
   }
+
+  async menuInfo(payload){
+    const { ctx } = this;
+    return await this.ctx.model.Menu.findOne(payload);
+  }
   
   // 获取所有的分类
   async classify(){

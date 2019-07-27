@@ -32,6 +32,7 @@ module.exports = app => {
   router.get('/menu/query', controller.menu.query);
   router.get('/menu/classify', controller.menu.classify);
   router.get('/menu/property', controller.menu.property);
+  router.get('/menu/menuInfo', controller.menu.menuInfo)
 
 
 
