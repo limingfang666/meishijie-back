@@ -41,7 +41,6 @@ class UserController extends Controller {
     const payload = ctx.request.body || {};
     
     const findUser = await service.user.findUser({name: payload.name});
-    
     if(!findUser) {
       ctx.body = {
         code: 1,
@@ -49,7 +48,6 @@ class UserController extends Controller {
       }
       return;
     }
-
     const result = await ctx.compare(payload.password, findUser.password);
 
     if(!result){
@@ -80,16 +78,23 @@ class UserController extends Controller {
     const { ctx,service,model } = this;
     const payload = ctx.request.body || {};
     let userId = '';
+    let authorization = ctx.request.header.authorization.split(' ')[1];
+    let decode = ctx.app.jwt.decode(authorization);
+    let ownerId = decode.data._id;  // 自己的id
     if(payload.userId){
       userId = payload.userId;
     }else {
-      let authorization = ctx.request.header.authorization.split(' ')[1];
-      let decode = ctx.app.jwt.decode(authorization);
-      userId = decode.data._id;
+      userId = ownerId;
     }
     
 
-    const findUser = await service.user.findUser({_id: userId});
+    const findUser = await service.user.findUserInfo({_id: userId});
+    // 自己是否关注请求的用户
+    let isFollowing = false;
+    if(payload.userId){
+      const findOwner = await service.user.findUserFollowing({userId: ownerId});
+      isFollowing = !!findOwner.find(item => item._id.toString() === userId); // 自己的粉丝中是否有要查的id
+    }
     const menus = await service.menu.query({userId: userId});
     if(!findUser) {
       ctx.body = {
@@ -99,18 +104,13 @@ class UserController extends Controller {
       }
       return;
     }
-    console.log(1111, menus)
+    
     ctx.body = {
       code: 0,
       data: {
-        name: findUser.name,
-        _id: findUser._id,
-        follows_len: findUser.follows.length,
-        following_len: findUser.following.length,
-        collections_len: findUser.collections.length,
+        ...findUser,
         work_menus_len: menus.length,
-        avatar: findUser.avatar,
-        createdAt: findUser.createdAt
+        isFollowing
       },
       mes: '用户已返回'
     }

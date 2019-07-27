@@ -17,7 +17,8 @@ class MenuService extends Service {
 
   async query(payload){
     const { ctx } = this;
-    return await this.ctx.model.Menu.find(payload,{userId:1, title: 1, classify: 1, property: 1});
+    const field = {userId:1, title: 1, classify: 1, property: 1, product_pic_url: 1,name:1};
+    return await this.ctx.model.Menu.find(payload, field);
   }
   
   // 获取所有的分类

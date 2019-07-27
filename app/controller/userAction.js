@@ -7,7 +7,7 @@ const Controller = require('egg').Controller;
 class UserActionController extends Controller {
   /**
    * get 获取关注者 {userId}
-   * post 关注或取消关注指定的用户 {userId:,followUserId:,}
+   * post 关注或取消关注指定的用户 {followUserId:,}
    * 
    */
   async following() {
@@ -19,17 +19,51 @@ class UserActionController extends Controller {
       let follows = await service.user.findUserFollowing(payloadClone);
       // 找到
       ctx.body = {
-        userId: payload.userId,
-        list: follows
+        code:0,
+        data:{
+          userId: payload.userId,
+          list: follows
+        },
+        mes: '返回我的关注'
       }
       return;
     }
     const body = ctx.request.body || {};
+    // 用户自己
+    let authorization = ctx.request.header.authorization.split(' ')[1];
+    let decode = ctx.app.jwt.decode(authorization);
+    body.userId = decode.data._id
     let isAdd = await service.user.toggleFollow(body);
+    // 获取添加关注用户的信息
+    const findFollowUser = await service.user.findUserInfo({_id: body.followUserId});
     ctx.body = {
       code: 0,
+      data:{
+        ...findFollowUser,
+        isFollowing: isAdd
+      },
       mes: isAdd ? '已关注' : '已取消关注'
     }
+  }
+  /**
+   * get 获取粉丝 {userId}
+   * 
+   */
+  async fans() {
+    const { ctx,service } = this;
+    const payload = ctx.request.query || {};
+      const payloadClone = ctx.helper.cloneDeepWith(payload);
+      //现在自己
+      let follows = await service.user.findUserFans(payloadClone);
+      // 找到
+      ctx.body = {
+        code:0,
+        data:{
+          userId: payload.userId,
+          list: follows
+        },
+        mes: '返回我的粉丝'
+      }
   }
   /**
    * 收藏的菜单

@@ -21,6 +21,8 @@ module.exports = app => {
   router.post('/user/following', controller.userAction.following);
   router.get('/user/following', controller.userAction.following);
 
+  // 我的粉丝
+  router.get('/user/fans', controller.userAction.fans);
   // 我收藏的
   router.post('/user/collection', controller.userAction.collection);
   router.get('/user/collection', controller.userAction.collection);

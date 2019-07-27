@@ -6,6 +6,8 @@ class MenuController extends Controller {
   async publish(){
     const { ctx,service } = this;
     const payload = ctx.request.body || {};
+    const findUser = await service.user.findUser({_id: payload.userId});
+    payload.name = findUser.name;
     const menu = await service.menu.publish(payload);
     
     ctx.body = {
@@ -27,7 +29,6 @@ class MenuController extends Controller {
   async query(){
     const { ctx,service } = this;
     const payload = ctx.request.query || {};
-    console.log(payload)
     // 转换分类查询数据
     if(payload.classify) {
       if(payload.classify.indexOf('-') === -1){
@@ -44,9 +45,15 @@ class MenuController extends Controller {
       })
       delete payload.property;
     }
-    console.log(payload);
     const menus = await service.menu.query(payload);
-    ctx.body = menus;
+    ctx.body = {
+      code: 0,
+      data: {
+        list: menus,
+        userId: payload.userId
+      },
+      mes: '菜谱返回成功'
+    };
   }
 
   async classify(){

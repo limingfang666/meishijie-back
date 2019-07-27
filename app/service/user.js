@@ -9,13 +9,26 @@ class UserService extends Service {
     payload.password = await ctx.genHash(payload.password);
     return await ctx.model.User.create(payload);
   }
-
+  async findUserInfo(payload, options){
+    let  findUser = await this.ctx.model.User.findOne(payload, options);
+    if(!findUser) return findUser;
+    return {
+      name: findUser.name,
+      _id: findUser._id,
+      follows_len: findUser.follows.length,
+      following_len: findUser.following.length,
+      collections_len: findUser.collections.length,
+      avatar: findUser.avatar,
+      createdAt: findUser.createdAt,
+    }
+  }
   async findUser(payload, options={}){
     if('userId' in payload){  // _id 和userId 都可以搜索
       payload._id = payload.userId;
       delete payload.userId;
     }
     return await this.ctx.model.User.findOne(payload, options);
+    
   }
 
   async login(payload){
@@ -36,6 +49,20 @@ class UserService extends Service {
                             
     if(followings){
       return followings.following;
+    }
+    return [];
+  }
+  // 查找用户的粉丝
+  async findUserFans(payload){
+    let fans = await this.ctx.model.User
+                            .findOne({_id: payload.userId}, {follows: 1})
+                            .populate({
+                              path: 'follows',
+                              select: 'name _id sign'
+                            });
+                            
+    if(fans){
+      return fans.follows;
     }
     return [];
   }
