@@ -70,9 +70,6 @@ class UserActionController extends Controller {
    */
   async collection(){
     const { ctx,service } = this;
-
-    
-
     if(ctx.request.method === 'GET'){
       const payload = ctx.request.query || {};
       const validateResult = await ctx.validate('user.collection', payload);
@@ -82,15 +79,30 @@ class UserActionController extends Controller {
       let collections = await service.user.findUserCollections(payloadClone);
       // 找到
       ctx.body = {
-        userId: payload.userId,
-        list: collections
+        code: 0,
+        data:{
+          userId: payload.userId,
+          list: collections
+        },
+        mes: '成功返回收藏'
       }
       return;
     }
 
     const body = ctx.request.body || {};
-    let isAdd = await service.user.toggleCollection(body);
-    ctx.returnBody(200, isAdd ? '已收藏' : '已取消收藏');
+    // 用户自己
+    let authorization = ctx.request.header.authorization.split(' ')[1];
+    let decode = ctx.app.jwt.decode(authorization);
+    body.userId = decode.data._id;
+    let toggleInfo = await service.user.toggleCollection(body);
+    ctx.body = {
+      code: 0,
+      data:{
+        isCollection:toggleInfo.isAdd,
+        collection_len: toggleInfo.collection_len
+      },
+      mes: toggleInfo.isAdd ? '已收藏' : '已取消收藏'
+    }
   }
 }
 

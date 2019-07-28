@@ -131,28 +131,32 @@ class UserService extends Service {
                           path: 'collections',  // 关注
                         });
     let collectionUsers = await this.ctx.model.Menu
-                .findOne({_id: payload.collectionId})
+                .findOne({_id: payload.menuId})
                 .populate({
                   path: 'collectionUsers',  // 粉丝
                 });
     let isAdd = false;
     // 关注 - 取关
-    if(!!collections.collections.find(item => item._id.toString() === payload.collectionId)){
+    if(!!collections.collections.find(item => item._id.toString() === payload.menuId)){
       // 取消关注
-      collections.collections = collections.collections.filter(item => item._id.toString() !== payload.collectionId);
+      collections.collections = collections.collections.filter(item => item._id.toString() !== payload.menuId);
       // 删掉粉丝
       collectionUsers.collectionUsers = collectionUsers.collectionUsers.filter(item => item._id.toString() !== payload.userId);
       isAdd = false;
     }else {
       // 关注
-      collections.collections.push(payload.collectionId);
+      collections.collections.push(payload.menuId);
       // 添加粉丝
       collectionUsers.collectionUsers.push(payload.userId);
       isAdd = true;
     }
     await collections.save();
     await collectionUsers.save();
-    return isAdd;
+    console.log('collectionUsers', collectionUsers.collectionUsers);
+    return {
+      isAdd,
+      collection_len: collectionUsers.collectionUsers.length
+    };
   }
   
 }

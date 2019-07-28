@@ -73,11 +73,22 @@ class MenuController extends Controller {
       return;
     }
     const userInfo = await service.user.findUserInfo({_id: menu.userId});
+    let menuInfo = {...menu._doc};
+    menuInfo.collection_len = menuInfo.collectionUsers.length;
+    delete menuInfo.collectionUsers;
+    // 收藏的users中是否有当前的用户
+    // 用户自己
+    let authorization = ctx.request.header.authorization.split(' ')[1];
+    let decode = ctx.app.jwt.decode(authorization);
+    let ownId = decode.data._id;
+    let isCollection = false; // 是否收藏
+    isCollection = !!menu.collectionUsers.find(item => item._id.toString() === ownId);
     ctx.body = {
       code: 0,
       data: {
         info:{
-          ...menu._doc,
+          ...menuInfo,
+          isCollection,
           userInfo
         },
         menuId: payload.menuId
