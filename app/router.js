@@ -35,7 +35,7 @@ module.exports = app => {
   router.get('/menu/property', controller.menu.property);
   router.get('/menu/menuInfo', controller.menu.menuInfo)
   router.post('/menu/product/upload', controller.menu.upload)
-  router.post('/menu/step/upload', controller.menu.upload)
+  router.post('/menu/step/upload', controller.menu.stepUpload)
 
 
 

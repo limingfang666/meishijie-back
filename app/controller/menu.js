@@ -70,24 +70,25 @@ class MenuController extends Controller {
     const stream = await ctx.getFileStream();
     const s = await streamToBuffer(stream)
     const imgWh = sizeOf(s);
-    if(imgWh.width > 400 || imgWh.width > 550){
-      ctx.body = {
-        code: 1,
-        data:{},
-        mes: '请上传符合尺寸的图片'
-      }
-      return;
-    }
+    console.log(imgWh);
+    // if(imgWh.width > 550 || imgWh.width < 400 || imgWh.height > 550){
+    //   ctx.body = {
+    //     code: 1,
+    //     data:{},
+    //     mes: '请上传符合尺寸的图片'
+    //   }
+    //   return;
+    // }
     const parse = path.parse(stream.filename);
     const filename = parse.name + Date.now() + parse.ext;
-    const target = path.join(__dirname, '../public/product', filename);
+    const target = path.join(__dirname, '../public/step', filename);
     const writeStream = fs.createWriteStream(target);
     bufferToStream(s).pipe(writeStream);
     ctx.cleanupRequestFiles();
     ctx.body = {
       code: 0,
       data:{
-        url: '/static/product/'+ filename
+        url: '/static/step/'+ filename
       },
       mes: '上传图片成功'
     }
