@@ -19,6 +19,7 @@ function streamToBuffer(stream) {
   });
 }
 const maxSize = 1024 * 1024 * 10;
+const host = 'http://127.0.0.1:7001'
 
 const Controller = require('egg').Controller;
 
@@ -59,7 +60,7 @@ class MenuController extends Controller {
     ctx.body = {
       code: 0,
       data:{
-        url: '/static/product/'+ filename
+        url: host + '/static/product/'+ filename
       },
       mes: '上传图片成功'
     }
@@ -88,7 +89,7 @@ class MenuController extends Controller {
     ctx.body = {
       code: 0,
       data:{
-        url: '/static/step/'+ filename
+        url: host + '/static/step/'+ filename
       },
       mes: '上传图片成功'
     }

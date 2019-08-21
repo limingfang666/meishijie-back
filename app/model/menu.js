@@ -13,7 +13,7 @@ module.exports = app => {
       craft: {type: String,  required: true},  // 工艺 enum: [1,2,3,4],
       flavor: {type: String, required: true},  // 口味  enum: [1,2,3,4],
       hard: {type: String, required: true},   // 难度 enum: [1,2,3,4],
-      pepole: {type: String, required: true}  // pepole 人数: [1,2,3,4],
+      people: {type: String, required: true}  // pepole 人数: [1,2,3,4],
     },
     product_pic_url: { type: String, required: true },
     product_story: { type: String, required: true, minlength:1, maxlength:100 },
