@@ -7,6 +7,7 @@ module.exports = app => {
   const { router, controller } = app;
   
   router.get('/', controller.home.index);
+  router.post('/upload', controller.home.upload);
 
 
   const token = app.middleware.token();
@@ -33,6 +34,8 @@ module.exports = app => {
   router.get('/menu/classify', controller.menu.classify);
   router.get('/menu/property', controller.menu.property);
   router.get('/menu/menuInfo', controller.menu.menuInfo)
+  router.post('/menu/product/upload', controller.menu.upload)
+  router.post('/menu/step/upload', controller.menu.upload)
 
 
 
