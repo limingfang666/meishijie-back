@@ -72,14 +72,14 @@ class MenuController extends Controller {
     const s = await streamToBuffer(stream)
     const imgWh = sizeOf(s);
     console.log(imgWh);
-    // if(imgWh.width > 550 || imgWh.width < 400 || imgWh.height > 550){
-    //   ctx.body = {
-    //     code: 1,
-    //     data:{},
-    //     mes: '请上传符合尺寸的图片'
-    //   }
-    //   return;
-    // }
+    if(imgWh.width > 550 || imgWh.width < 400){
+      ctx.body = {
+        code: 1,
+        data:{},
+        mes: '请上传符合尺寸的图片'
+      }
+      return;
+    }
     const parse = path.parse(stream.filename);
     const filename = parse.name + Date.now() + parse.ext;
     const target = path.join(__dirname, '../public/step', filename);
