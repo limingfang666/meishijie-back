@@ -2,8 +2,8 @@
 module.exports = app => {
   const mongoose = app.mongoose
   const MenuSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, required: true, index: true },
-    name: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, required: false, index: true },
+    name: { type: String, required: false },
     collectionUsers:[{
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'User',
@@ -19,19 +19,19 @@ module.exports = app => {
     product_story: { type: String, required: true, minlength:1, maxlength:100 },
     raw_material:{ // 原材料
       main_material: [{  // 主料
-        name: {type: String, required: true},
-        specs: {type: String, required: true},
+        name: {type: String, required: false},
+        specs: {type: String, required: false},
       }],
       accessories_material: [{  // 辅料
-        name: {type: String, required: true},
-        specs: {type: String, required: true},
+        name: {type: String, required: false},
+        specs: {type: String, required: false},
       }]
     },
     steps: [{
-      img_url: {type: String, required: true},
-      describe: {type: String, required: true},
+      img_url: {type: String, required: false},
+      describe: {type: String, required: false},
     }],
-    skill:  { type: String, required: true, minlength:1, maxlength:100 },
+    skill:  { type: String, required: false, minlength:1, maxlength:100 },
     classify: {type: String, required: true},
     parent_classify: {type: String, required: true},
     createdAt: { type: Date, default: Date.now },

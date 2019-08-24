@@ -1,31 +1,78 @@
 const puppeteer = require('puppeteer');
-
 const pathToExtension = require('path').join(__dirname, 'chrome-mac/Chromium.app/Contents/MacOS/Chromium');
+const fs =require('fs');
+const path = require('path');
+const meunsPath = path.join(__dirname, './menus.json');
+
+const sleep = (t) => {
+  return new Promise((r) => {
+    setTimeout(() => {
+      r();
+    },t)
+  })
+}
 
 async function run(){
   console.log('开始')
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     executablePath: pathToExtension,
-    timeout: 30000, // 默认超时为30秒，设置为0则表示不设置超时
+    timeout: 3000, // 默认超时为30秒，设置为0则表示不设置超时
   });
 
-  // 打开空白页面
-  const page = await browser.newPage();
+  
+  const i = 3;
+  const url = `https://www.meishij.net/china-food/xiaochi/?&page=${i}`;
+  const datas = await getData(browser, url);
 
-  await page.goto('http://localhost:8080/', {
-      // 配置项
-      // waitUntil: 'networkidle', // 等待网络状态为空闲的时候才继续执行
-  });
-  
-  const dimensions = await page.evaluate(() => {
-    console.log($('listtyle1_list .listtyle1 img').attr('src'))
-    return $('listtyle1_list .listtyle1 img').eq(0).attr('src')
-  });
-  
-  console.log(dimensions);
+  // const name = '家常菜谱';
+  // const name = '中华菜系';
+  const name = '各地小吃';
+
+  saveMeuns({
+    name,
+    list: datas,
+    page: 3
+  })
 
   await browser.close();
+  console.log('已关闭')
 }
 
 run();
+
+
+function saveMeuns(data){
+  const meuns = require(meunsPath);
+  const list = meuns.find(item => item.name === data.name);
+  const d = [...meuns]
+  if(list) {
+    list.list = [
+      ...list.list,
+      ...data.list
+    ]
+  }else {
+    d.push(data);
+  }
+  
+  fs.writeFileSync(meunsPath, JSON.stringify(d, null, 2), {encoding: 'utf-8', flag: 'w'});
+}
+
+async function getData(browser, url){
+  const page = await browser.newPage();
+  await page.goto(url);
+
+  const datas = await page.evaluate(() => {
+    const list = $('#listtyle1_list .listtyle1');
+    const data = [];
+    list.each((index, item) => {
+      data.push({
+        link: $(item).find('a').attr('href'),
+        imgSrc: $(item).find('img').attr('src')
+      })
+    })
+    return data;
+  });
+  await page.close();
+  return datas;
+}
