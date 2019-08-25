@@ -17,12 +17,20 @@ class UserActionController extends Controller {
       const payloadClone = ctx.helper.cloneDeepWith(payload);
       //现在自己
       let follows = await service.user.findUserFollowing(payloadClone);
+      let followsData = follows.map((item) => {
+        return {
+          name: item.name,
+          _id: item._id,
+          following_len: item.following.length,
+          follows_len: item.follows.length,
+        }
+      })
       // 找到
       ctx.body = {
         code:0,
         data:{
           userId: payload.userId,
-          list: follows
+          list: followsData
         },
         mes: '返回我的关注'
       }
@@ -55,12 +63,20 @@ class UserActionController extends Controller {
       const payloadClone = ctx.helper.cloneDeepWith(payload);
       //现在自己
       let follows = await service.user.findUserFans(payloadClone);
+      let followsData = follows.map((item) => {
+        return {
+          name: item.name,
+          _id: item._id,
+          following_len: item.following.length,
+          follows_len: item.follows.length,
+        }
+      })
       // 找到
       ctx.body = {
         code:0,
         data:{
           userId: payload.userId,
-          list: follows
+          list: followsData
         },
         mes: '返回我的粉丝'
       }

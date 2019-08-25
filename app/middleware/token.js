@@ -31,6 +31,17 @@ module.exports = () => {
         return;
       }
     }
+
+    // 判断是否合法
+    let decode = ctx.app.jwt.decode(authorization);
+    if(!decode){
+      ctx.body = {
+        code: 1,
+        data:{},
+        mes: 'token不合法，请检查后重试'
+      }
+      return;
+    }
     
     await next();
   }

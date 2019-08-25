@@ -44,7 +44,7 @@ class UserService extends Service {
                             .findOne({_id: payload.userId}, {following: 1})
                             .populate({
                               path: 'following',
-                              select: 'name _id sign'
+                              select: 'name _id sign follows following'
                             });
                             
     if(followings){
@@ -58,7 +58,7 @@ class UserService extends Service {
                             .findOne({_id: payload.userId}, {follows: 1})
                             .populate({
                               path: 'follows',
-                              select: 'name _id sign'
+                              select: 'name _id sign follows following'
                             });
                             
     if(fans){

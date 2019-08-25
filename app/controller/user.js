@@ -1,12 +1,60 @@
 'use strict';
+const path = require('path');
+const fs = require('fs');
+var sizeOf = require('image-size');
+let Duplex = require('stream').Duplex;
 
 const Controller = require('egg').Controller;
+function bufferToStream(buffer) {  
+  let stream = new Duplex();
+  stream.push(buffer);
+  stream.push(null);
+  return stream;
+}
+function streamToBuffer(stream) {  
+  return new Promise((resolve, reject) => {
+    let buffers = [];
+    stream.on('error', reject);
+    stream.on('data', (data) => buffers.push(data))
+    stream.on('end', () => resolve(Buffer.concat(buffers)));
+  });
+}
+const maxSize = 1024 * 1024 * 2;
+const host = 'http://127.0.0.1:7001'
 
 class UserController extends Controller {
   constructor(ctx){
     super(ctx);
   }
-
+  // 上传用户头像
+  async userAvatar() {
+    const { ctx } = this;
+    const stream = await ctx.getFileStream();
+    const s = await streamToBuffer(stream)
+    const imgWh = sizeOf(s);
+    console.log(imgWh);
+    if(imgWh.width > 210 || imgWh.width < 210){
+      ctx.body = {
+        code: 1,
+        data:{},
+        mes: '请上传符合尺寸的图片'
+      }
+      return;
+    }
+    const parse = path.parse(stream.filename);
+    const filename = parse.name + Date.now() + parse.ext;
+    const target = path.join(__dirname, '../public/users', filename);
+    const writeStream = fs.createWriteStream(target);
+    bufferToStream(s).pipe(writeStream);
+    ctx.cleanupRequestFiles();
+    ctx.body = {
+      code: 0,
+      data:{
+        url: host + '/static/users/'+ filename
+      },
+      mes: '上传图片成功'
+    }
+  }
   async create(){
     const { ctx,service,model } = this;
     const payload = ctx.request.body || {};

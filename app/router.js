@@ -28,6 +28,9 @@ module.exports = app => {
   router.post('/user/collection', controller.userAction.collection);
   router.get('/user/collection', controller.userAction.collection);
 
+  // 修改头像
+  router.post('/user/avatar', controller.user.userAvatar);
+
   // 菜谱相关
   router.post('/menu/publish', controller.menu.publish);
   router.get('/menu/query', controller.menu.query);
