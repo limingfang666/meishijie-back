@@ -14,7 +14,7 @@ module.exports = appInfo => {
   const config = exports = {};
   config.static = {
     prefix: '/static', 
-    dir: path.join(appInfo.baseDir, 'app/public'),
+    dir: path.join(appInfo.baseDir, 'app/public/'),
     dynamic: true, // 如果当前访问的静态资源没有缓存，则缓存静态文件，和`preload`配合使用；
     preload: false,
     maxAge: 31536000, // in prod env, 0 in other envs
@@ -24,7 +24,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1560783914976_4751';
 
   // add your middleware config here
-  config.middleware = [];
+  config.middleware = [ 'errorHandler' ];
 
   // add your user config here
   const userConfig = {
@@ -35,7 +35,7 @@ module.exports = appInfo => {
     csrf: {
       enable: false,
     },
-    domainWhiteList: [ 'http://127.0.0.1:7001' ],
+    domainWhiteList: [ 'http://127.0.0.1:7001', 'http://172.16.224.234:8080' ],
   }
 
   config.mongoose = {
@@ -74,12 +74,14 @@ module.exports = appInfo => {
   
   config.multipart = {
     mode: 'stream',
-    tmpdir: path.join(process.cwd(), './app/public/upload'),
+    tmpdir: path.join(process.cwd(), './app/public'),
     fileSize: '50mb',
     whitelist: [
       '.png',
       '.jpg',
-      '.gif'
+      '.gif',
+      '.mp4',
+      '.zip'
     ],
   };
 

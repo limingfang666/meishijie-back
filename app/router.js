@@ -8,7 +8,7 @@ module.exports = app => {
   
   router.get('/', controller.home.index);
   router.post('/upload', controller.home.upload);
-
+  router.post('/up', controller.home.up);
 
   const token = app.middleware.token();
 
@@ -28,18 +28,11 @@ module.exports = app => {
   router.post('/user/collection', controller.userAction.collection);
   router.get('/user/collection', controller.userAction.collection);
 
-  // 修改头像
-  router.post('/user/avatar', controller.user.userAvatar);
-
   // 菜谱相关
   router.post('/menu/publish', controller.menu.publish);
   router.get('/menu/query', controller.menu.query);
   router.get('/menu/classify', controller.menu.classify);
   router.get('/menu/property', controller.menu.property);
-  router.get('/menu/menuInfo', controller.menu.menuInfo)
-  router.post('/menu/product/upload', controller.menu.upload)
-  router.post('/menu/step/upload', controller.menu.stepUpload)
-
-
-
+  router.get('/menu/menuInfo', controller.menu.menuInfo);
+  
 };
