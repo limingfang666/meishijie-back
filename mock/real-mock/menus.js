@@ -2,7 +2,7 @@
 // 给user插入菜单
 
 const menusDetails = require('../reptile/menus_detail.json');
-const users = require('./user.js');
+const users = require('../data/user.js');
 const {chunk} = require('lodash');
 
 const axios = require('axios');

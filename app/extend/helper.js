@@ -79,4 +79,17 @@ exports.writeStreamToDisk = async function(stream, options) {
   }
 }
 
+// 删除 value 值为undefined或者null的字段
+exports.filterDef = function(obj){
+  let cloneObj = {...obj};
+  for(let key in cloneObj){
+    if(cloneObj.hasOwnProperty(key)){
+      if(typeof cloneObj[key] === 'undefined' || cloneObj[key] === null){
+        delete cloneObj[key];
+      }
+    }
+  }
+  return cloneObj;
+}
+
 

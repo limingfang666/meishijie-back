@@ -9,10 +9,6 @@ class HomeController extends Controller {
     const { ctx } = this;
     ctx.body = 'hi, egg';
   }
-  async create() {
-    const { ctx } = this;
-    ctx.body = 'create';
-  }
   async up(){
     // 测试断点续传
     const {ctx} = this;

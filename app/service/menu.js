@@ -1,4 +1,6 @@
+
 const Service = require('egg').Service
+const pageSize = 2;
 class MenuService extends Service {
   constructor(ctx){
     super(ctx);
@@ -15,10 +17,20 @@ class MenuService extends Service {
     return menu;
   }
 
-  async query(payload){
+  async query(payload, otherData={page:1}){
     const { ctx } = this;
     const field = {userId:1, title: 1, classify: 1, property: 1, product_pic_url: 1,name:1};
-    return await this.ctx.model.Menu.find(payload, field);
+    const page = +otherData.page;
+    const skip = (page-1) * pageSize;
+    const total = await this.ctx.model.Menu.count();
+    let query = ctx.helper.filterDef(payload);
+    const list = await this.ctx.model.Menu.find(query, field).skip(skip).limit(pageSize).sort({_id: -1});
+    return {
+      list,
+      total,
+      current_page: page,
+      page_size: pageSize
+    }
   }
 
   async menuInfo(payload){
@@ -68,6 +80,13 @@ class MenuService extends Service {
     });
 
     return obj;
+  }
+
+  async comment(payload){
+    return await this.ctx.model.Comment.create(payload);
+  }
+  async getComment(payload){
+    return await this.ctx.model.Comment.find(payload);
   }
 }
 

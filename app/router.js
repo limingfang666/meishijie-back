@@ -34,5 +34,7 @@ module.exports = app => {
   router.get('/menu/classify', controller.menu.classify);
   router.get('/menu/property', controller.menu.property);
   router.get('/menu/menuInfo', controller.menu.menuInfo);
+  router.post('/menu/comment', controller.menu.comment);
+  router.get('/menu/comment', controller.menu.comment);
   
 };

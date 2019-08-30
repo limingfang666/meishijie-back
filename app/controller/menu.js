@@ -25,17 +25,18 @@ class MenuController extends Controller {
    *  userId 根据用户Id来查询所有菜谱
    *  classify 根据分类查询 '1': 大类；'1-1': 小类查询
    *  property 根据属性来删选 [普通筛选] 
+   *  page 分页
    *  
    *  以上可以单独查询，也可以组合查询
    */
   async query(){
     const { ctx,service } = this;
     const payload = ctx.request.query || {};
+    const otherData = {page:1};
     // 转换分类查询数据
     if(payload.classify) {
       if(payload.classify.indexOf('-') === -1){
         payload.parent_classify = payload.classify;
-        delete payload.classify;
       }
     }
 
@@ -44,14 +45,28 @@ class MenuController extends Controller {
       const property = JSON.parse(payload.property);
       Object.keys(property).forEach((key) => {
         payload[`property.${key}`] = property[key];
-      })
-      delete payload.property;
+      });
     }
-    const menus = await service.menu.query(payload);
+    if(payload.page) otherData.page = payload.page;
+
+    if(isNaN(+otherData.page)){
+      ctx.body = {
+        code: 1,
+        data: {},
+        mes: '分页不为数字，请重新填写'
+      };
+      return;
+    }
+
+    const query = {
+      classify: payload.classify,
+      property: payload.property,
+    }
+    const menus = await service.menu.query(query, otherData);
     ctx.body = {
       code: 0,
       data: {
-        list: menus,
+        ...menus,
         userId: payload.userId
       },
       mes: '菜谱返回成功'
@@ -113,6 +128,32 @@ class MenuController extends Controller {
     ctx.body = {
       ec: 200,
       data: properties
+    };
+  }
+
+  async comment() {
+    const { ctx,service } = this;
+    if(ctx.request.method === 'GET'){
+      const payload = ctx.request.query || {};
+      const commentInfo = await service.menu.getComment(payload);
+      console.log('commentInfo: ', commentInfo);
+      return ctx.body = {
+        ec: 200,
+        data: {
+          comments: commentInfo,
+          menu_id: payload.menu_id
+        },
+        mes: '评论成功'
+      };;
+    }
+    const payload = ctx.request.body || {};
+    const commentInfo = await service.menu.comment(payload);
+    console.log('commentInfo: ', commentInfo);
+
+    ctx.body = {
+      ec: 200,
+      data: {},
+      mes: '评论成功'
     };
   }
 }

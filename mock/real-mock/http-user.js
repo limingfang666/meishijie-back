@@ -1,6 +1,6 @@
 // 模拟想后端发送请求，来注册用户
 let axios = require('axios');
-let users = require('./data/user.js')
+let users = require('../data/user.js')
 let createUrl = `http://localhost:7001/user/create`;
 
 users.forEach((user) => {
