@@ -86,7 +86,7 @@ class MenuService extends Service {
     return await this.ctx.model.Comment.create(payload);
   }
   async getComment(payload){
-    return await this.ctx.model.Comment.find(payload);
+    return await  await this.ctx.model.Comment.find(payload).populate({path: 'userInfo', select: 'name _id avatar'});
   }
 }
 

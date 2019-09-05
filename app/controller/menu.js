@@ -136,8 +136,7 @@ class MenuController extends Controller {
     const { ctx,service } = this;
     if(ctx.request.method === 'GET'){
       const payload = ctx.request.query || {};
-      const commentInfo = await service.menu.getComment(payload);
-      console.log('commentInfo: ', commentInfo);
+      const commentInfo = await service.menu.getComment(payload);      
       return ctx.body = {
         ec: 200,
         data: {
@@ -148,12 +147,15 @@ class MenuController extends Controller {
       };;
     }
     const payload = ctx.request.body || {};
+    payload.userInfo = payload.userId;
     const commentInfo = await service.menu.comment(payload);
-    console.log('commentInfo: ', commentInfo);
-
+    
     ctx.body = {
       ec: 200,
-      data: {},
+      data: {
+        comments: commentInfo,
+        menu_id: payload.menu_id
+      },
       mes: '评论成功'
     };
   }
