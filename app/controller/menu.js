@@ -63,6 +63,7 @@ class MenuController extends Controller {
       property: payload.property,
     }
     const menus = await service.menu.query(query, otherData);
+    await ctx.helper.sleep(1000);
     ctx.body = {
       code: 0,
       data: {

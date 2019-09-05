@@ -93,3 +93,6 @@ exports.filterDef = function(obj){
 }
 
 
+exports.sleep = function(t){
+  return new Promise((r) => setTimeout(r, t));
+}

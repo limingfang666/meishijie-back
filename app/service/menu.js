@@ -1,6 +1,6 @@
 
 const Service = require('egg').Service
-const pageSize = 2;
+const pageSize = 20;
 class MenuService extends Service {
   constructor(ctx){
     super(ctx);
@@ -27,7 +27,7 @@ class MenuService extends Service {
     const list = await this.ctx.model.Menu.find(query, field).skip(skip).limit(pageSize).sort({_id: -1});
     return {
       list,
-      total,
+      total: 100,
       current_page: page,
       page_size: pageSize
     }
