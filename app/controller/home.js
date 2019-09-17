@@ -9,20 +9,15 @@ class HomeController extends Controller {
     const { ctx } = this;
     ctx.body = 'hi, egg';
   }
-  async up(){
-    // 测试断点续传
-    const {ctx} = this;
-    const stream = await ctx.getFileStream();
-
-    stream.on('data',(chunk)=>{
-      console.log('chunk: ', chunk);
-    })
-    stream.on('end',(chunk)=>{
-      console.log('end: ', chunk);
-    })
-
+  async banner() {
+    const { ctx,service } = this;
+    const menus = await service.menu.query({},{page:1});
     ctx.body = {
-      mes:'ok'
+      code: 0,
+      data:{
+        list: menus.list.slice(0,5)
+      },
+      mes: 'banner返回成功'
     }
   }
   async upload () {

@@ -152,7 +152,6 @@ class UserService extends Service {
     }
     await collections.save();
     await collectionUsers.save();
-    console.log('collectionUsers', collectionUsers.collectionUsers);
     return {
       isAdd,
       collection_len: collectionUsers.collectionUsers.length

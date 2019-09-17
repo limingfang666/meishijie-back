@@ -8,7 +8,7 @@ module.exports = app => {
   
   router.get('/', controller.home.index);
   router.post('/upload', controller.home.upload);
-  router.post('/up', controller.home.up);
+  router.get('/banner', controller.home.banner);
 
   const token = app.middleware.token();
 
