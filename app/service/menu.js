@@ -18,13 +18,16 @@ class MenuService extends Service {
   }
 
   async query(payload, otherData={page:1}){
+    console.log(payload)
     const { ctx, service } = this;
     const field = {userId:1, title: 1, classify: 1, property: 1, product_pic_url: 1,name:1};
     const page = +otherData.page;
     const skip = (page-1) * pageSize;
-    const total = await this.ctx.model.Menu.count();
+    // const total = await this.ctx.model.Menu.count();
     let query = ctx.helper.filterDef(payload);
-    const list = await this.ctx.model.Menu.find(query, field).skip(skip).limit(pageSize).sort({_id: -1});
+    let queryList = this.ctx.model.Menu.find(query, field);
+    const total = await queryList.countDocuments();
+    const list = await queryList.find().skip(skip).limit(pageSize).sort({_id: -1});
     // 查找评论
     for(let i = 0; i < list.length; i++){
       const commnets = await service.menu.getComment({menu_id: list[i]._id});
@@ -33,7 +36,7 @@ class MenuService extends Service {
     
     return {
       list,
-      total: 100,
+      total: total,
       current_page: page,
       page_size: pageSize
     }

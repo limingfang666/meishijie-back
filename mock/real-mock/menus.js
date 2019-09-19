@@ -17,14 +17,18 @@ function createRandomId(n=4){
   return randomNum(n) + '-' + randomNum(n);
 }
 
+function pcreateRandomId(k,n=4){
+  return k + '-' + randomNum(n);
+}
+
 menusDetails.forEach((item) => {
   item.list.forEach((option) => {
     option.product_story = '111';
     option.property =  {
-      craft: createRandomId(),  // 工艺 enum: [1,2,3,4],
-      flavor: createRandomId(),  // 口味  enum: [1,2,3,4],
-      hard: createRandomId(),   // 难度 enum: [1,2,3,4],
-      people: createRandomId()  // pepole 人数: [1,2,3,4],
+      craft: pcreateRandomId(1),  // 工艺 enum: [1,2,3,4],
+      flavor: pcreateRandomId(2),  // 口味  enum: [1,2,3,4],
+      hard: pcreateRandomId(3),   // 难度 enum: [1,2,3,4],
+      people: pcreateRandomId(4)  // pepole 人数: [1,2,3,4],
     }  // 属性
     option.classify = createRandomId(3) // 菜谱分类
   })

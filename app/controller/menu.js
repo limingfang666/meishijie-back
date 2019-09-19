@@ -46,6 +46,7 @@ class MenuController extends Controller {
       Object.keys(property).forEach((key) => {
         payload[`property.${key}`] = property[key];
       });
+      delete payload.property
     }
     if(payload.page) otherData.page = payload.page;
 
@@ -57,11 +58,13 @@ class MenuController extends Controller {
       };
       return;
     }
-
+    
     const query = {
+      ...payload,
       classify: payload.classify,
-      property: payload.property,
+      page: null
     }
+    //console.log('query', query);
     const menus = await service.menu.query(query, otherData);
     await ctx.helper.sleep(1000);
     ctx.body = {
