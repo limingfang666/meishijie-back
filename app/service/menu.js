@@ -1,6 +1,6 @@
 
 const Service = require('egg').Service
-const pageSize = 20;
+const pageSize = 5;
 class MenuService extends Service {
   constructor(ctx){
     super(ctx);
@@ -18,7 +18,6 @@ class MenuService extends Service {
   }
 
   async query(payload, otherData={page:1}){
-    console.log(payload)
     const { ctx, service } = this;
     const field = {userId:1, title: 1, classify: 1, property: 1, product_pic_url: 1,name:1};
     const page = +otherData.page;
