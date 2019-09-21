@@ -33,7 +33,7 @@ class UserController extends Controller {
     const payload = ctx.request.body || {};
     await service.actionToken.deleteToken({userId: payload._id});
     ctx.body = {
-      code: 1,
+      code: 0,
       mes: '已登出'
     }
   }
@@ -110,11 +110,35 @@ class UserController extends Controller {
       code: 0,
       data: {
         ...findUser,
+        userId: findUser._id,
         work_menus_len: menus.length,
         isFollowing
       },
       mes: '用户已返回'
     }
+  }
+
+  async edit(){
+    const { ctx,service,model } = this;
+    const payload = ctx.request.body || {};
+    let userId = '';
+    console.log(ctx.request.header.authorization)
+    let authorization = ctx.request.header.authorization.split(' ')[1];
+    let decode = ctx.app.jwt.decode(authorization);
+    let ownerId = decode.data._id;  // 自己的id
+    console.log('ownerId', ownerId)
+    if(ownerId){
+      userId = ownerId;
+    }
+    payload._id = userId;
+    console.log(payload)
+    const findUser = await service.user.changeUserInfo(payload);
+    ctx.body = {
+      code: 0,
+      data:{},
+      mes: '修改成功'
+    }
+    return;
   }
 }
 

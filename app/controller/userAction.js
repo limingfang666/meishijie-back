@@ -21,6 +21,7 @@ class UserActionController extends Controller {
         return {
           name: item.name,
           _id: item._id,
+          sign: item.sign,
           following_len: item.following.length,
           follows_len: item.follows.length,
         }

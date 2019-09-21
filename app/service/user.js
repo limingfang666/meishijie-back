@@ -15,10 +15,12 @@ class UserService extends Service {
     return {
       name: findUser.name,
       _id: findUser._id,
+      userId: findUser._id,
       follows_len: findUser.follows.length,
       following_len: findUser.following.length,
       collections_len: findUser.collections.length,
       avatar: findUser.avatar,
+      sign: findUser.sign,
       createdAt: findUser.createdAt,
     }
   }
@@ -156,6 +158,10 @@ class UserService extends Service {
       isAdd,
       collection_len: collectionUsers.collectionUsers.length
     };
+  }
+
+  async changeUserInfo(payload){
+    return this.ctx.model.User.findByIdAndUpdate(payload._id, {...payload})
   }
   
 }

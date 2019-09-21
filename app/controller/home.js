@@ -1,7 +1,7 @@
 'use strict';
 const path = require('path');
 const fs = require('fs');
-
+const host = 'http://127.0.0.1:7001'
 
 const Controller = require('egg').Controller;
 class HomeController extends Controller {
@@ -43,7 +43,7 @@ class HomeController extends Controller {
     ctx.body = {
       code: 0,
       data:{
-        url: info.accessPath
+        url: host + info.accessPath
       },
       mes: '上传图片成功'
     }

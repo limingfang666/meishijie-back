@@ -18,6 +18,7 @@ class MenuService extends Service {
   }
 
   async query(payload, otherData={page:1}){
+
     const { ctx, service } = this;
     const field = {userId:1, title: 1, classify: 1, property: 1, product_pic_url: 1,name:1};
     const page = +otherData.page;
@@ -25,7 +26,7 @@ class MenuService extends Service {
     // const total = await this.ctx.model.Menu.count();
     let query = ctx.helper.filterDef(payload);
     let queryList = this.ctx.model.Menu.find(query, field);
-    const total = await queryList.countDocuments();
+    const total = await queryList.count();
     const list = await queryList.find().skip(skip).limit(pageSize).sort({_id: -1});
     // 查找评论
     for(let i = 0; i < list.length; i++){

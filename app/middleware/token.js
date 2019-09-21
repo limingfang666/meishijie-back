@@ -25,7 +25,7 @@ module.exports = () => {
         ctx.body = {
           code: 1,
           data:{},
-          error: 401,
+          error: 400,
           mes: '登录已过期，请重新登录'
         }
         return;
@@ -38,6 +38,7 @@ module.exports = () => {
       ctx.body = {
         code: 1,
         data:{},
+        error: 400,
         mes: 'token不合法，请检查后重试'
       }
       return;

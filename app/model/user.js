@@ -4,7 +4,7 @@ module.exports = app => {
   const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
     password: { type: String, required: true },
-    sign: { type: String },
+    sign: { type: String,default: '' },
     avatar: { type: String, default: 'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png'},
     userage: {type: Number},
     follows: [{ 
