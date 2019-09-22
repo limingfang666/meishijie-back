@@ -64,7 +64,6 @@ class MenuController extends Controller {
       classify: payload.classify,
       page: null
     }
-    //console.log('query', query);
     const menus = await service.menu.query(query, otherData);
     await ctx.helper.sleep(1000);
     ctx.body = {

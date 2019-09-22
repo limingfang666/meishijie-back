@@ -8,7 +8,6 @@ module.exports = async function(){
     let ification = await meunClassificationModel.findOne({type: datas[i].type});
     if(ification) continue;
     await meunClassificationModel.create(datas[i]).then((e,d) => {
-      console.log('分类插入成功')
     })
   }
   

@@ -11,6 +11,7 @@ class UserService extends Service {
   }
   async findUserInfo(payload, options){
     let  findUser = await this.ctx.model.User.findOne(payload, options);
+    let menus = await this.ctx.service.menu.query({userId: payload._id});
     if(!findUser) return findUser;
     return {
       name: findUser.name,
@@ -21,6 +22,7 @@ class UserService extends Service {
       collections_len: findUser.collections.length,
       avatar: findUser.avatar,
       sign: findUser.sign,
+      work_menus_len: menus.total,
       createdAt: findUser.createdAt,
     }
   }
