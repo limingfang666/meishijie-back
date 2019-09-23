@@ -1,4 +1,5 @@
 'use strict';
+const properties = require('../data/property');
 const path = require('path');
 const fs = require('fs');
 
@@ -32,7 +33,7 @@ class MenuController extends Controller {
   async query(){
     const { ctx,service } = this;
     const payload = ctx.request.query || {};
-    const otherData = {page:1};
+    const otherData = {page:0};
     // 转换分类查询数据
     if(payload.classify) {
       if(payload.classify.indexOf('-') === -1){
@@ -82,6 +83,7 @@ class MenuController extends Controller {
     const payload = ctx.request.query || {};
 
     const menu = await service.menu.menuInfo({_id: payload.menuId});
+    menu._doc.menuId = menu._id;
     if(!menu){
       ctx.body = {
         code: 1,
@@ -103,6 +105,29 @@ class MenuController extends Controller {
     let ownId = decode.data._id;
     let isCollection = false; // 是否收藏
     isCollection = !!menu.collectionUsers.find(item => item._id.toString() === ownId);
+
+    // 处理一下属性
+    menuInfo.properties_show = [];
+    Object.keys(menuInfo.property).forEach((key) => {
+      for(let i = 0; i < properties.length; i++){
+        if(properties[i].title === key){
+          for(let j = 0; j < properties[i].list.length; j++){
+            if(properties[i].list[j].type === menuInfo.property[key]){
+              menuInfo.properties_show.push({
+                type: properties[i].list[j].type,
+                name: properties[i].list[j].name,
+                parent_type: properties[i].type,
+                parent_title: properties[i].title,
+                parent_name: properties[i].name,
+              })
+              break;
+            }
+          }
+          break;
+        }
+      }
+    })
+
     ctx.body = {
       code: 0,
       data: {
