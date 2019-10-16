@@ -46,21 +46,29 @@ exports.writeStreamToDisk = async function(stream, options) {
     filename: '',
     width: Infinity,
     height: Infinity,
-    size: Infinity
+    size: Infinity,
+    just: false
   }
   Object.assign(defaults, options);
-  const {width, height, size} = defaults;
+  const {width, height, size, just} = defaults;
   const streamInfo = await getStreamInfo(stream);
-  if(streamInfo.width > width || streamInfo.height > height) {
+  
+  if(just && !(streamInfo.width == width && streamInfo.height == height)){
     return {
       error: 1,
-      mes: '文件尺寸不符合规定'
+      mes: '文件尺寸不符合要求'
+    }
+  }
+  if(!just && (streamInfo.width > width || streamInfo.height > height)) {
+    return {
+      error: 1,
+      mes: '文件尺寸不符合要求'
     }
   }
   if(streamInfo.size > size) {
     return {
       error: 1,
-      mes: '文件大小不符合规定'
+      mes: '文件大小不符合要求'
     }
   }
   const parse = path.parse(stream.filename);

@@ -130,6 +130,7 @@ class UserController extends Controller {
     }
     payload._id = userId;
     const findUser = await service.user.changeUserInfo(payload);
+    await service.menu.changeMenuInfo({userId: userId},{name: payload.name});
     ctx.body = {
       code: 0,
       data:{},

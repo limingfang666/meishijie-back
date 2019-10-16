@@ -29,7 +29,7 @@ class MenuService extends Service {
     const total = await queryList.count();
     let list = [];
     if(page == 0){
-      list = await queryList.find();
+      list = await queryList.find().sort({'_id':-1});
     }else {
       list = await queryList.find().skip(skip).limit(pageSize).sort({_id: -1});
     }
@@ -48,7 +48,10 @@ class MenuService extends Service {
       page_size: pageSize
     }
   }
-
+  async changeMenuInfo(updateAttr, updateValue){
+    const { ctx } = this;
+    return await this.ctx.model.Menu.update({userId: updateAttr.userId},updateValue, { multi: true });
+  }
   async menuInfo(payload){
     const { ctx } = this;
     return await this.ctx.model.Menu.findOne(payload);
@@ -99,10 +102,11 @@ class MenuService extends Service {
   }
 
   async comment(payload){
-    return await this.ctx.model.Comment.create(payload);
+    await this.ctx.model.Comment.create(payload);
+    return await this.ctx.model.Comment.findOne(payload).populate({path: 'userInfo', select: 'name _id avatar'});
   }
   async getComment(payload){
-    return await  await this.ctx.model.Comment.find(payload).populate({path: 'userInfo', select: 'name _id avatar'});
+    return await this.ctx.model.Comment.find(payload).sort({'_id':-1}).populate({path: 'userInfo', select: 'name _id avatar'});
   }
 }
 

@@ -26,16 +26,16 @@ module.exports = app => {
   // 我的粉丝
   router.get('/user/fans', controller.userAction.fans);
   // 我收藏的
-  router.post('/user/collection', controller.userAction.collection);
-  router.get('/user/collection', controller.userAction.collection);
+  router.post('/user/collection', token, controller.userAction.collection);
+  router.get('/user/collection', token, controller.userAction.collection);
 
   // 菜谱相关
-  router.post('/menu/publish', controller.menu.publish);
+  router.post('/menu/publish', token, controller.menu.publish);
   router.get('/menu/query', controller.menu.query);
   router.get('/menu/classify', controller.menu.classify);
   router.get('/menu/property', controller.menu.property);
   router.get('/menu/menuInfo', controller.menu.menuInfo);
-  router.post('/menu/comment', controller.menu.comment);
+  router.post('/menu/comment', token, controller.menu.comment);
   router.get('/menu/comment', controller.menu.comment);
   
 };

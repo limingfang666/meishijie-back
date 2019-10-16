@@ -18,13 +18,15 @@ module.exports = {
       path: '/upload/product',
       width: 328,
       height: 440,
-      size: 1024 * 1024 * 10
+      size: 1024 * 1024 * 10,
+      just: true
     },
     user:{
       path: '/upload/user',
       width: 210,
       height: 210,
-      size: 1024 * 1024 * 2
+      size: 1024 * 1024 * 2,
+      just: true
     }
   }
 }

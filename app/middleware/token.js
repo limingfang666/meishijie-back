@@ -1,6 +1,7 @@
 module.exports = () => {
   return async (ctx, next) => {
     let authorization = ctx.request.header.authorization;
+    console.log('authorization', authorization);
     if(!authorization){
       ctx.body = {
         code: 1,
@@ -11,6 +12,7 @@ module.exports = () => {
       return;
     }
     authorization = authorization.split(' ')[1];
+   
     try{
       let data = await ctx.app.jwt.verify(authorization, ctx.app.config.jwt.secret);
     }catch(err){

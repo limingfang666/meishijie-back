@@ -9,12 +9,19 @@ class MenuController extends Controller {
   async publish(){
     const { ctx,service } = this;
     const payload = ctx.request.body || {};
-    const findUser = await service.user.findUser({_id: payload.userId});
+    let ownId = '';
+    if(ctx.request.header.authorization){
+      let authorization = ctx.request.header.authorization.split(' ')[1];
+      let decode = ctx.app.jwt.decode(authorization);
+      ownId = decode.data._id;
+    }
+    const findUser = await service.user.findUser({_id: ownId});
     payload.name = findUser.name;
+    payload.userId = findUser._id;
     const menu = await service.menu.publish(payload);
-    
     ctx.body = {
       code: 0,
+      data:{},
       mes: '发布成功'
     }
   }
@@ -83,7 +90,7 @@ class MenuController extends Controller {
     const payload = ctx.request.query || {};
 
     const menu = await service.menu.menuInfo({_id: payload.menuId});
-    menu._doc.menuId = menu._id;
+    
     if(!menu){
       ctx.body = {
         code: 1,
@@ -94,18 +101,25 @@ class MenuController extends Controller {
       }
       return;
     }
+    menu._doc.menuId = menu._id;
     const userInfo = await service.user.findUserInfo({_id: menu.userId});
     let menuInfo = {...menu._doc};
     menuInfo.collection_len = menuInfo.collectionUsers.length;
     delete menuInfo.collectionUsers;
     // 收藏的users中是否有当前的用户
     // 用户自己
-    let authorization = ctx.request.header.authorization.split(' ')[1];
-    let decode = ctx.app.jwt.decode(authorization);
-    let ownId = decode.data._id;
+    let ownId = '';
+    if(ctx.request.header.authorization){
+      let authorization = ctx.request.header.authorization.split(' ')[1];
+      let decode = ctx.app.jwt.decode(authorization);
+      ownId = decode.data._id;
+    }
+    
     let isCollection = false; // 是否收藏
-    isCollection = !!menu.collectionUsers.find(item => item._id.toString() === ownId);
-
+    if(ownId){
+      isCollection = !!menu.collectionUsers.find(item => item._id.toString() === ownId);
+    }
+    
     // 处理一下属性
     menuInfo.properties_show = [];
     Object.keys(menuInfo.property).forEach((key) => {
@@ -163,20 +177,35 @@ class MenuController extends Controller {
     const { ctx,service } = this;
     if(ctx.request.method === 'GET'){
       const payload = ctx.request.query || {};
-      const commentInfo = await service.menu.getComment(payload);      
+      const commentInfo = await service.menu.getComment(payload);   
+      commentInfo.forEach((item) => {
+        item._doc.commentId = item._doc._id;
+        delete item._doc._id;
+        item._doc.userInfo._doc.userId = item._doc.userInfo._doc._id;   
+        delete item._doc.userInfo._doc._id;
+      })
+      
       return ctx.body = {
         ec: 200,
         data: {
           comments: commentInfo,
           menu_id: payload.menu_id
         },
-        mes: '评论成功'
+        mes: '成功返回评论'
       };;
     }
     const payload = ctx.request.body || {};
+    let ownId = '';
+    if(ctx.request.header.authorization){
+      let authorization = ctx.request.header.authorization.split(' ')[1];
+      let decode = ctx.app.jwt.decode(authorization);
+      ownId = decode.data._id;
+    }
+    payload.userId = ownId;
     payload.userInfo = payload.userId;
     const commentInfo = await service.menu.comment(payload);
-    
+    commentInfo._doc.userInfo._doc.userId = commentInfo._doc.userInfo._doc._id;
+    delete commentInfo._doc.userInfo._doc._id;
     ctx.body = {
       ec: 200,
       data: {
